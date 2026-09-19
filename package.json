@@ -1,0 +1,75 @@
+{
+    "name": "xnovel",
+    "version": "1.00.0",
+    "description": "xNovel novel-downloader",
+    "main": "main.js",
+    "author": "x-builder",
+    "license": "MIT",
+    "homepage": "https://github.com/x-builder1965/xNovel",
+    "scripts": {
+        "start": "chcp 65001 && electron .",
+        "build": "electron-builder --win",
+        "dist": "electron-builder --win --x64",
+        "dist:32": "electron-builder --win --ia32",
+        "dist:portable": "electron-builder --win --x64 --target portable",
+        "publish": "electron-builder --win --publish always",
+        "sign": "electron-builder --win --x64 --config.cscLink=authenticode.pfx --config.cscKeyPassword=%CSC_KEY_PASSWORD%"
+    },
+    "dependencies": {
+        "cheerio": "^1.2.0"
+    },
+    "devDependencies": {
+        "electron": "^30.0.0",
+        "electron-builder": "^26.0.12"
+    },
+    "build": {
+        "appId": "com.xnovel.app",
+        "productName": "xNovel",
+        "copyright": "Copyright © 2026- x-builder",
+        "asar": true,
+        "compression": "maximum",
+        "directories": {
+            "output": "dist-win"
+        },
+        "files": [
+            "package.json",
+            "main.js",
+            "preload.js",
+            "renderer.js",
+            "style.css",
+            "index.html",
+            "xNovel.png",
+            "xNovel.ico"
+        ],
+        "win": {
+            "icon": "xNovel.ico",
+            "target": [
+                {
+                    "target": "nsis",
+                    "arch": [
+                        "x64"
+                    ]
+                }
+            ],
+            "verifyUpdateCodeSignature": true,
+            "forceCodeSigning": false
+        },
+        "nsis": {
+            "oneClick": false,
+            "perMachine": true,
+            "allowElevation": true,
+            "allowToChangeInstallationDirectory": true,
+            "createDesktopShortcut": true,
+            "createStartMenuShortcut": true,
+            "shortcutName": "xNovel",
+            "menuCategory": "Multimedia",
+            "installerIcon": "xNovel.ico",
+            "uninstallerIcon": "xNovel.ico",
+            "installerHeaderIcon": "xNovel.ico",
+            "warningsAsErrors": false,
+            "installerLanguages": [
+                "ja_JP"
+            ]
+        }
+    }
+}

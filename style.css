@@ -1,0 +1,473 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* デフォルト：ダークモード */
+body {
+    font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #1c2526;
+    color: #e0e0e0;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-shrink: 0;
+    background-color: #121819;
+    border-bottom: 1px solid #2a3638;
+    padding: 12px 20px;
+}
+.header h1 {
+    margin: 0;
+    font-size: 1.3rem;
+}
+.title-group {
+    display: flex;
+    align-items: center; /* 垂直位置を中央揃えに変更 */
+    gap: 12px;
+}
+.title-icon {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+    cursor: pointer;
+}
+.app-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.5rem;
+    margin: 0;
+    cursor: pointer;
+    color: #8dffc6;
+}
+.ver-title {
+    font-size: 1rem;
+    margin: 0;
+    color: #d2d2d2;
+    cursor: pointer;
+    line-height: 1; /* 高さのズレを防ぐため調整 */
+}
+
+/* ★ リスト幅サイズ変更対応：.sidebar の幅設定 */
+.sidebar {
+    width: 280px;         /* 初期幅 */
+    min-width: 150px;     /* 最小幅 */
+    flex-shrink: 0;       /* フレックスボックス内で勝手に縮まないように固定 */
+    background-color: #161e1f;
+    border-right: 1px solid #2a3638;
+    display: flex;
+    flex-direction: column;
+    border-radius: 4px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+#textList li:hover {
+    background-color: #2a3638;
+}
+
+#textList li.selected {
+    background-color: #005f73;
+    color: #ffffff;
+}
+
+#textViewer {
+    background-color: #1c2526;
+    color: #e0e0e0;
+    border: none;
+}
+
+.search-bar input {
+    background-color: #2a3638;
+    color: #e0e0e0;
+    border: 1px solid #444;
+}
+
+/* 明示的なダークモード指定（body.dark-mode） */
+body.dark-mode {
+    background-color: #1c2526;
+    color: #e0e0e0;
+}
+
+body.dark-mode header {
+    background-color: #121819;
+    border-bottom: 1px solid #2a3638;
+}
+
+body.dark-mode .sidebar {
+    background-color: #161e1f;
+    border-right: 1px solid #2a3638;
+}
+
+body.dark-mode #textList li:hover {
+    background-color: #2a3638;
+}
+
+body.dark-mode #textList li.selected {
+    background-color: #005f73;
+    color: #ffffff;
+}
+
+body.dark-mode #textViewer {
+    background-color: #1c2526;
+    color: #e0e0e0;
+    border: none;
+}
+
+body.dark-mode .search-bar input {
+    background-color: #2a3638;
+    color: #e0e0e0;
+    border: 1px solid #444;
+}
+
+/* ライトモード切り替え時（body.light-mode） */
+body.light-mode {
+    background-color: #f5f5f5;
+    color: #333333;
+}
+
+body.light-mode header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #dddddd;
+}
+
+body.light-mode .sidebar {
+    background-color: #e9e9e9;
+    border-right: 1px solid #dddddd;
+}
+
+body.light-mode #textList li:hover {
+    background-color: #dcdcdc;
+}
+
+body.light-mode #textList li.selected {
+    background-color: #007acc;
+    color: #ffffff;
+}
+
+body.light-mode #textViewer {
+    background-color: #ffffff;
+    color: #333333;
+    border: none;
+}
+
+body.light-mode .search-bar input {
+    background-color: #ffffff;
+    color: #333333;
+    border: 1px solid #ccc;
+}
+
+/* テーマスイッチボタン */
+.theme-switch button {
+    font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+    background: transparent;
+    border: 1px solid #444;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+body.dark-mode .theme-switch button {
+    border-color: #2a3638;
+    color: #e0e0e0;
+}
+body.dark-mode .theme-switch button:hover {
+    background-color: #2a3638;
+}
+body.light-mode .theme-switch button {
+    border-color: #ccc;
+    color: #333333;
+}
+body.light-mode .theme-switch button:hover {
+    background-color: #e9e9e9;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    gap: 10px;
+    overflow: hidden;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+/* Nコード入力欄の基本スタイルとフォーカス時の強調定義 */
+#ncodeInput {
+    max-width: 140px;
+    flex-shrink: 0;
+    padding: 8px 12px;
+    font-size: 20px;
+    border: 2px solid #3a484a;
+    border-radius: 4px;
+    background-color: #121819;
+    color: #ffffff;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+/* ★ フォーカス（アクティブ）時の強調表示 */
+#ncodeInput:focus {
+    border-color: #e7e301;             /* 枠線を明瞭な色に変更 */
+    background-color: #182224;         /* 背景色を少し明るく */
+    box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.35); /* 外側に発光・ハイライト効果 */
+}
+/* ライトモード時のフォーカス表示 */
+body.light-mode #ncodeInput {
+    border-color: #ccc;
+    background-color: #ffffff;
+    color: #333333;
+}
+body.light-mode #ncodeInput:focus {
+    border-color: #ccc900;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(0, 122, 204, 0.25);
+}
+/* 作品タイトル表示領域（余白を自動で埋める） */
+.title-display {
+    flex: 1;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 8px 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-radius: 4px;
+}
+/* ダークモード時のタイトル表示背景スタイル */
+body.dark-mode .title-display {
+    background-color: #161e1f;
+    color: #e0e0e0;
+    border: 1px solid #2a3638;
+}
+/* ライトモード時のタイトル表示背景スタイル */
+body.light-mode .title-display {
+    background-color: #ffffff;
+    color: #333333;
+    border: 1px solid #ccc;
+}
+
+.search-bar input {
+    flex: 1;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 4px;
+    outline: none;
+}
+
+.search-bar button {
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    background-color: #0a9396;
+    color: white;
+}
+
+.search-bar button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.status-message {
+    font-size: 13px;
+    height: 18px;
+    color: #94d2bd;
+}
+
+.content-container {
+    flex: 1;
+    display: flex;
+    gap: 10px;
+    overflow: hidden;
+}
+
+.sidebar h3 {
+    font-size: 14px;
+    margin-bottom: 8px;
+    user-select: none; /* リサイズ操作中の文字列選択を防止 */
+}
+
+#textList {
+    list-style: none;
+    overflow-y: auto;
+    flex: 1;
+    width: 100%;
+}
+
+#textList li {
+    padding: 8px 10px;
+    font-size: 13px;
+    cursor: pointer;
+    border-radius: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.viewer {
+    flex: 1;              /* 余りの幅をすべて自動で埋める */
+    min-width: 0;         /* 横幅調整時に溢れを防止 */
+    display: flex;
+}
+
+#textViewer {
+    width: 100%;
+    height: 100%;
+    padding: 12px;
+    font-size: 14px;
+    line-height: 1.6;
+    resize: none;
+    outline: none;
+    font-family: inherit;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* スクロールバーのカスタマイズ（ダークテーマ用: textList & textViewer） */
+body.dark-mode #textList::-webkit-scrollbar,
+body.dark-mode #textViewer::-webkit-scrollbar,
+#textList::-webkit-scrollbar,
+#textViewer::-webkit-scrollbar {
+    width: 8px;
+}
+body.dark-mode #textList::-webkit-scrollbar-track,
+body.dark-mode #textViewer::-webkit-scrollbar-track,
+#textList::-webkit-scrollbar-track,
+#textViewer::-webkit-scrollbar-track {
+    background: #121212;
+}
+body.dark-mode #textList::-webkit-scrollbar-thumb,
+body.dark-mode #textViewer::-webkit-scrollbar-thumb,
+#textList::-webkit-scrollbar-thumb,
+#textViewer::-webkit-scrollbar-thumb {
+    background: #999;
+    border-radius: 4px;
+}
+body.dark-mode #textList::-webkit-scrollbar-thumb:hover,
+body.dark-mode #textViewer::-webkit-scrollbar-thumb:hover,
+#textList::-webkit-scrollbar-thumb:hover,
+#textViewer::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
+
+/* 進捗バーコンテナ */
+.progress-container {
+    width: 100%;
+    height: 8px;
+    margin: 4px 0;
+    display: flex;
+    align-items: center;
+}
+.progress-container.hidden {
+    display: none;
+}
+progress {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: #2a3638;
+}
+/* 検索時：緑色 */
+progress.searching::-webkit-progress-value {
+    background-color: #2a9d8f;
+    transition: width 0.3s ease;
+}
+/* 保存時：黄色 */
+progress.saving::-webkit-progress-value {
+    background-color: #e9c46a;
+    transition: width 0.1s ease;
+}
+progress::-webkit-progress-bar {
+    background-color: #2a3638;
+    border-radius: 4px;
+}
+/* ライトモード時の背景調整 */
+body.light-mode progress::-webkit-progress-bar {
+    background-color: #e0e0e0;
+}
+
+/* 中止モード時のボタンデザイン */
+button.cancel-mode {
+    background-color: #e76f51;
+    color: #ffffff;
+}
+button.cancel-mode:hover {
+    background-color: #d65a3b;
+}
+
+/* トーストメッセージ用コンテナ（画面上部中央） */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    pointer-events: none;
+}
+
+/* トースト本体 */
+.toast-message {
+    pointer-events: auto !important;
+    background-color: #2a9d8f;
+    color: #ffffff;
+    font-size: 20px;
+    padding: 12px 24px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    user-select: none;
+    white-space: pre-wrap;
+    text-align: center;
+    animation: toastIn 0.3s ease forwards;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+/* 非表示時のスタイル */
+.toast-message.hide {
+    animation: none !important;
+    opacity: 0;
+    transform: translateY(-20px);
+    pointer-events: none;
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease, transform 0.3s ease, max-height 0.3s ease, padding 0.3s ease;
+}
+@keyframes toastIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.copyright-container {
+    display: flex;
+    justify-content: space-between; /* 子要素を両端（左端と右端）に配置 */
+    align-items: center;            /* 上下の縦中央揃え */
+    width: 100%;                     /* 親要素の幅を画面（または親要素）いっぱいに広げる */
+}

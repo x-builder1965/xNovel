@@ -1,0 +1,42 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Electron: Main",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+      "windows": {
+        "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
+      },
+      "args": [
+        ".",                          // カレントディレクトリのアプリを起動
+        // "H:/Book/(一般小説)/(一般小説) ＠_小説家になろう/n9629ex：連載中_最弱テイマーはゴミ拾いの旅を始めました。/0001_オードグズの世界について.txt",
+        "--remote-debugging-port=9223" // Rendererアタッチ用ポート（必須）
+      ],
+      "console": "integratedTerminal",
+      "outputCapture": "std",
+      "timeout": 30000
+    },
+    {
+      "name": "Debug Electron: Renderer",
+      "type": "chrome",
+      "request": "attach",
+      "port": 9223,
+      "webRoot": "${workspaceFolder}",     // または "${workspaceFolder}/src" などRendererのルートに
+      "timeout": 60000,                    // 起動遅延対策で長めに
+      "sourceMaps": true,
+      "trace": true                       // 接続エラー時に便利
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Debug Electron: All",
+      "configurations": [
+        "Debug Electron: Main",
+        "Debug Electron: Renderer"
+      ]
+    }
+  ]
+}
