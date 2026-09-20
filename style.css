@@ -1,3 +1,8 @@
+/* -- style.css --------------------------------------------------------
+ * copyright = 'Copyright © 2026- @x-builder, Japan';
+ * email     = 'x-builder@gmail.com';
+ * appName   = 'xNovel -小説家になろうダウンローダー- Ver1.01.0';
+ * --------------------------------------------------------------------- */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -470,4 +475,16 @@ button.cancel-mode:hover {
     justify-content: space-between; /* 子要素を両端（左端と右端）に配置 */
     align-items: center;            /* 上下の縦中央揃え */
     width: 100%;                     /* 親要素の幅を画面（または親要素）いっぱいに広げる */
+}
+
+/* style.css 等に追加 */
+.status-display {
+    max-width: 100px;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    font-weight: bold;
+    /* 必要に応じてパディングや背景色等を調整 */
 }

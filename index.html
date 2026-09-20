@@ -1,3 +1,12 @@
+<!-- -- index.html ---------------------------------------------------
+ copyright = 'Copyright © 2026- @x-builder, Japan';
+ email     = 'x-builder@gmail.com';
+ appName   = 'xNovel -小説家になろうダウンローダー- Ver1.01.0';
+ ---------------------------------------------------------------------
+ 【変更履歴】
+  2026-09-20 Ver1.01.0 掲載状況の追加と作成フォルダ名形式の変更。
+  2026-09-19 Ver1.00.0 初回コミット。
+ --------------------------------------------------------------------- -->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -22,6 +31,7 @@
     <main>
         <section class="search-bar">
             <input type="text" id="ncodeInput" placeholder="Nコードを入力 (例: n9669b)">
+            <div id="statusDisplay" class="status-display"></div>
             <div id="titleDisplay" class="title-display"></div>
             <button id="searchBtn">🔎</button>
             <button id="saveBtn" disabled>💾</button>

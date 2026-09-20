@@ -1,3 +1,8 @@
+// -- preload.js -------------------------------------------------------
+// copyright = 'Copyright © 2026- @x-builder, Japan';
+// email     = 'x-builder@gmail.com';
+// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.00.0';
+// ---------------------------------------------------------------------
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('api', {

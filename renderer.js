@@ -1,6 +1,12 @@
+// -- renderer.js ------------------------------------------------------
+// copyright = 'Copyright © 2026- @x-builder, Japan';
+// email     = 'x-builder@gmail.com';
+// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.01.0';
+// ---------------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
     const themeToggle = document.getElementById('themeToggle');
     const ncodeInput = document.getElementById('ncodeInput');
+    const statusDisplay = document.getElementById('statusDisplay'); // ★ 追加
     const titleDisplay = document.getElementById('titleDisplay');
     const searchBtn = document.getElementById('searchBtn');
     const saveBtn = document.getElementById('saveBtn');
@@ -199,8 +205,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // メタデータ取得完了の通知受け取り
-    window.api.onMeta(({ title, total }) => {
+    // ★ メタデータ取得完了の通知受け取り（status を追加）
+    window.api.onMeta(({ title, status, total }) => {
+        statusDisplay.textContent = status; // ★ 連載状況を表示
         titleDisplay.textContent = title;
         statusMessage.textContent = `「${title}」の概要を取得しました。本文を取得中... (0 / ${total} 話)`;
         progressBar.max = total;
@@ -223,7 +230,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isSearching) {
             window.api.cancelFetchNovel();
             statusMessage.textContent = '検索を中止しています...';
-            searchBtn.disabled = true;
+            saveBtn.disabled = true;
+            statusDisplay.textContent = ''; // ★ 初期化
+            titleDisplay.textContent = '';
+            textList.innerHTML = '';
+            textViewer.value = '';
             return;
         }
 
@@ -242,6 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
         searchBtn.classList.add('cancel-mode');
         
         saveBtn.disabled = true;
+        statusDisplay.textContent = ''; // ★ 初期化
         titleDisplay.textContent = '';
         textList.innerHTML = '';
         textViewer.value = '';
@@ -294,6 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const result = await window.api.saveFiles({
                 ncode: currentNovelData.ncode, // ★ ncode を追加して渡す
+                status: currentNovelData.status, // ★ 連載状況を保存処理に渡す
                 title: currentNovelData.title,
                 items: currentNovelData.items
             });
