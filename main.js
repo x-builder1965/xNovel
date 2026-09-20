@@ -1,7 +1,7 @@
 // -- main.js ----------------------------------------------------------
 // copyright = 'Copyright © 2026- @x-builder, Japan';
 // email     = 'x-builder@gmail.com';
-// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.01.0';
+// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.03.0';
 // ---------------------------------------------------------------------
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
@@ -65,10 +65,11 @@ ipcMain.handle('fetch-novel', async (event, ncode) => {
     const meta = apiData[1];
     const generalAllNo = meta.general_all_no;
     const novelTitle = meta.title;
+    // noveltype: 1 = 連載, 2 = 短編
+    const novelType = meta.novel_type;
 
-    // ★ 修正：なろうAPIの仕様 (end: 0 は完結済、1 は連載中、2 は短編)
-    // end === 1 の場合のみ「連載中」、それ以外（0や2）は「完結済」とする
-    const novelStatus = (meta.end === 1) ? '連載中' : '完結済';
+    // なろうAPIの仕様 (end: 0 は完結済、1 は連載中、2 は短編)
+    const novelStatus = (novelType === 1) ? (meta.end === 1) ? '連載中' : '完結済' : '短編';
 
     if (isFetchCancelled) {
         throw new Error('検索が中止されました。');
@@ -94,47 +95,86 @@ ipcMain.handle('fetch-novel', async (event, ncode) => {
         content: overviewContent
     });
 
-    // ★ 復活：2. 各話の本文スクレイピング処理
-    for (let i = 1; i <= generalAllNo; i++) {
-        // サーバー負荷軽減のため1.2秒待機
+    // 短編（noveltype === 2）または全1話で単一ページ構成の場合の処理
+    const isSinglePage = novelType === 2 || generalAllNo === 1;
+
+    if (isSinglePage) {
         await sleep(1200);
 
-        // ループ毎にキャンセルフラグをチェック
         if (isFetchCancelled) {
             throw new Error('検索が中止されました。');
         }
 
-        const episodeUrl = `https://ncode.syosetu.com/${formattedNcode}/${i}/`;
+        // 短編・単話作品は /1/ ではなく Nコード直下のURL
+        const episodeUrl = `https://ncode.syosetu.com/${formattedNcode}/`;
         const epRes = await fetch(episodeUrl, {
             headers: { 'User-Agent': 'xNovel-Downloader/1.0' }
         });
 
-        if (!epRes.ok) {
-            continue;
+        if (epRes.ok) {
+            const html = await epRes.text();
+            const $ = cheerio.load(html);
+
+            // 短編・全1話用のタイトル・本文抽出セレクタ対応
+            const epTitle = $('.p-novel__title').text().trim() || novelTitle;
+            const epBody = $('.js-novel-text').text().trim() || $('#novel_honbun').text().trim();
+
+            items.push({
+                ncode: formattedNcode,
+                type: 'episode',
+                seqNo: 1,
+                epNoStr: '本文',
+                subtitle: epTitle,
+                title: epTitle,
+                content: `${epTitle}\n\n${epBody}`
+            });
+
+            event.sender.send('fetch-progress', {
+                ncode: formattedNcode,
+                current: 1,
+                total: 1
+            });
         }
+    } else {
+        // 2話以上の連載作品のスクレイピング処理
+        for (let i = 1; i <= generalAllNo; i++) {
+            await sleep(1200);
 
-        const html = await epRes.text();
-        const $ = cheerio.load(html);
+            if (isFetchCancelled) {
+                throw new Error('検索が中止されました。');
+            }
 
-        const epTitle = $('.p-novel__title').text().trim() || `第${i}話`;
-        const epBody = $('.js-novel-text').text().trim();
+            const episodeUrl = `https://ncode.syosetu.com/${formattedNcode}/${i}/`;
+            const epRes = await fetch(episodeUrl, {
+                headers: { 'User-Agent': 'xNovel-Downloader/1.0' }
+            });
 
-        items.push({
-            ncode: formattedNcode,
-            type: 'episode',
-            seqNo: i,
-            epNoStr: `第${i}話`,
-            subtitle: epTitle,
-            title: `第${i}話: ${epTitle}`,
-            content: `${epTitle}\n\n${epBody}`
-        });
+            if (!epRes.ok) {
+                continue;
+            }
 
-        // 進捗をレンダラープロセスへ通知
-        event.sender.send('fetch-progress', {
-            ncode: formattedNcode,
-            current: i,
-            total: generalAllNo
-        });
+            const html = await epRes.text();
+            const $ = cheerio.load(html);
+
+            const epTitle = $('.p-novel__title').text().trim() || `第${i}話`;
+            const epBody = $('.js-novel-text').text().trim();
+
+            items.push({
+                ncode: formattedNcode,
+                type: 'episode',
+                seqNo: i,
+                epNoStr: `第${i}話`,
+                subtitle: epTitle,
+                title: `第${i}話: ${epTitle}`,
+                content: `${epTitle}\n\n${epBody}`
+            });
+
+            event.sender.send('fetch-progress', {
+                ncode: formattedNcode,
+                current: i,
+                total: generalAllNo
+            });
+        }
     }
 
     return {
