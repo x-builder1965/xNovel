@@ -1,7 +1,7 @@
 // -- renderer.js ------------------------------------------------------
 // copyright = 'Copyright © 2026- @x-builder, Japan';
 // email     = 'x-builder@gmail.com';
-// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.01.0';
+// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.02.0';
 // ---------------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
     const themeToggle = document.getElementById('themeToggle');
@@ -267,15 +267,18 @@ document.addEventListener('DOMContentLoaded', () => {
             statusMessage.textContent = `「${currentNovelData.title}」の全データ取得完了 (${currentNovelData.items.length - 1}話 + 概要)`;
 
             // リスト描画
+            let i = 0;
             currentNovelData.items.forEach((item) => {
+                const seqStr = String(i).padStart(4, '0');
                 const li = document.createElement('li');
-                li.textContent = item.title;
+                li.textContent = `${seqStr}_${item.title}`;
                 li.addEventListener('click', () => {
                     document.querySelectorAll('#textList li').forEach((el) => el.classList.remove('selected'));
                     li.classList.add('selected');
                     textViewer.value = item.content;
                 });
                 textList.appendChild(li);
+                i++;
             });
 
             if (textList.firstChild) {
