@@ -1,6 +1,6 @@
 {
     "name": "xnovel",
-    "version": "1.04.0",
+    "version": "1.05.0",
     "description": "xNovel novel-downloader",
     "main": "main.js",
     "author": "x-builder",
@@ -35,9 +35,11 @@
             "package.json",
             "main.js",
             "preload.js",
-            "renderer.js",
             "style.css",
             "index.html",
+            "index_helpTable.html",
+            "index_changelog.html",
+            "renderer.js",
             "xNovel.png",
             "xNovel.ico"
         ],

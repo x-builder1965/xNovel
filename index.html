@@ -1,14 +1,7 @@
 <!-- -- index.html ---------------------------------------------------
  copyright = 'Copyright © 2026- @x-builder, Japan';
  email     = 'x-builder@gmail.com';
- appName   = 'xNovel -小説家になろうダウンローダー- Ver1.04.0';
- ---------------------------------------------------------------------
- 【変更履歴】
-  2026-09-20 Ver1.04.0 リストに保存対象チェック、全設定・全解除を追加。
-  2026-09-20 Ver1.03.0 短編（1話完結）小説の取得に対応。
-  2026-09-20 Ver1.02.0 リストのサブタイトルにシーケンシャルNoを追加。
-  2026-09-20 Ver1.01.0 掲載状況の追加と作成フォルダ名形式の変更。
-  2026-09-19 Ver1.00.0 初回コミット。
+ appName   = 'xNovel -小説家になろうダウンローダー- Ver1.05.0';
  --------------------------------------------------------------------- -->
 <!DOCTYPE html>
 <html lang="ja">
@@ -18,48 +11,70 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="dark-mode">
-    <header>
-        <div class="title-group">
-            <h1 class="app-title">
-                <img src="xNovel.ico" alt="xNovel Icon" class="title-icon">
-                xNovel -小説家になろうダウンローダー- 
-            </h1>
-            <div class="ver-title">Ver1.04.0</div>
-        </div>
-        <div class="theme-switch">
-            <button id="themeToggle" type="button" aria-label="テーマ切り替え">☀️</button>
-        </div>
-    </header>
+    <div class="main-container">
+        <header>
+            <div class="title-group">
+                <h1 class="app-title">
+                    <img src="xNovel.ico" alt="xNovel Icon" class="title-icon">
+                    xNovel -小説家になろうダウンローダー- 
+                </h1>
+                <div class="ver-title">Ver1.00.0</div>
+            </div>
+            <div class="theme-switch">
+                <button id="themeToggle" type="button" aria-label="テーマ切り替え">☀️</button>
+            </div>
+        </header>
 
-    <main>
-        <section class="search-bar">
-            <input type="text" id="ncodeInput" placeholder="Nコードを入力 (例: n9669b)">
-            <div id="statusDisplay" class="status-display"></div>
-            <div id="titleDisplay" class="title-display"></div>
-            <button id="searchBtn">🔎</button>
-            <button id="saveBtn" disabled>💾</button>
-        </section>
-        <div id="progressContainer" class="progress-container hidden">
-            <progress id="progressBar" value="0" max="100"></progress>
-        </div>
-        <section class="content-container">
-            <aside class="sidebar">
-                <div class="sidebar-header">
-                    <h3>リスト</h3>
-                    <div class="selection-buttons">
-                        <button type="button" id="selectAllBtn" class="btn-sm">全選択</button>
-                        <button type="button" id="deselectAllBtn" class="btn-sm">全解除</button>
-                    </div>
-                </div>
-                <ul id="textList"></ul>
-            </aside>
-            <section class="viewer">
-                <textarea id="textViewer" readonly placeholder="リストから項目を選択するとここに表示されます。"></textarea>
+        <main>
+            <section class="search-bar">
+                <input type="text" id="ncodeInput" placeholder="Nコードを入力 (例: n9669b)">
+                <div id="statusDisplay" class="status-display"></div>
+                <div id="titleDisplay" class="title-display"></div>
+                <button id="searchBtn">🔎</button>
+                <button id="saveBtn" disabled>💾</button>
             </section>
-        </section>
+            <div id="progressContainer" class="progress-container hidden">
+                <progress id="progressBar" value="0" max="100"></progress>
+            </div>
+            
+            <section class="content-container">
+                <aside class="sidebar">
+                    <div class="sidebar-header">
+                        <h3>リスト</h3>
+                        <div class="selection-buttons">
+                            <button type="button" id="selectAllBtn" class="btn-sm">全選択</button>
+                            <button type="button" id="deselectAllBtn" class="btn-sm">全解除</button>
+                        </div>
+                    </div>
+                    <ul id="textList"></ul>
+                </aside>
+                <section class="viewer">
+                    <textarea id="textViewer" readonly placeholder="リストから項目を選択するとここに表示されます。"></textarea>
+                </section>
+            </section>
 
-        <div id="statusMessage" class="status-message"></div>
-    </main>
+            <div id="statusMessage" class="status-message"></div>
+        </main>
+    </div>
+
+    <!-- ヘルプ -->
+    <div class="help-container">
+        <div class="header-row">
+            <h1>xNovel -小説家になろうダウンローダー- Ver1.00.0 ヘルプ</h1>
+            <button id="helpCloseBtn" class="btn-Close" title="ヘルプ閉じる（Escape）">❌</button>
+        </div>
+        <div id="helpTableContainer" class="help-table-container"></div>
+    </div>
+
+    <!-- 変更履歴 -->
+    <div class="changelog-container">
+        <div class="header-row">
+            <h1>xNovel -小説家になろうダウンローダー- Ver1.00.0 変更履歴</h1>
+            <button id="changelogCloseBtn" class="btn-Close" title="変更履歴閉じる（Escape）">❌</button>
+        </div>
+        <div id="appConfigContainer" class="app-config-container" style="display: none;"></div>
+        <div id="changelogContent" class="changelog-Content"></div>
+    </div>
 
     <!-- copyright＆email -->
     <div class="copyright-container">

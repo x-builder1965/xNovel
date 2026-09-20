@@ -1,22 +1,148 @@
 /* -- style.css --------------------------------------------------------
  * copyright = 'Copyright © 2026- @x-builder, Japan';
  * email     = 'x-builder@gmail.com';
- * appName   = 'xNovel -小説家になろうダウンローダー- Ver1.04.0';
+ * appName   = 'xNovel -小説家になろうダウンローダー- Ver1.05.0';
  * --------------------------------------------------------------------- */
+:root {
+    /* デフォルト：ダークテーマ */
+    --bg-color: #1c2526;
+    --text-color: #e0e0e0;
+    --text-muted: #d2d2d277;
+    --border-color: #2a3638;
+    
+    /* ヘッダー・サイドバー・カード類 */
+    --header-bg: #121819;
+    --sidebar-bg: #161e1f;
+    --card-bg: #1c2526;
+    --input-bg: #2a3638;
+    --input-border: #444444;
+    
+    /* アクセント・プライマリカラー */
+    --primary-color: #0a9396;
+    --primary-hover: #005f73;
+    --primary-text: #ffffff;
+    --app-title-color: #8dffc6;
+    --status-msg-color: #94d2bd;
+    
+    /* フォーカス・入力枠 */
+    --ncode-bg: #121819;
+    --ncode-focus-bg: #182224;
+    --ncode-border: #3a484a;
+    --ncode-focus-border: #e7e301;
+    --ncode-focus-shadow: rgba(42, 157, 143, 0.35);
+
+    /* ホバー・選択状態 */
+    --list-hover-bg: #2a3638;
+    --list-selected-bg: #005f73;
+    --list-selected-text: #ffffff;
+
+    /* ボタン・キャンセルの制御 */
+    --btn-cancel-bg: #e76f51;
+    --btn-cancel-hover: #d65a3b;
+    --btn-cancel-text: #ffffff;
+
+    /* 進捗バー・トースト */
+    --progress-bg: #2a3638;
+    --progress-searching: #2a9d8f;
+    --progress-saving: #e9c46a;
+    --toast-bg: #2a9d8f;
+    --toast-text: #ffffff;
+    
+    /* スクロールバー用 */
+    --scrollbar-track: #121212;
+    --scrollbar-thumb: #999999;
+    --scrollbar-thumb-hover: #777777;
+
+    /* ヘルプ・変更履歴用の変数追加（参考例より保持） */
+    --heading-color: #aaccff;
+    --heading-shadow: rgba(0, 212, 255, 0.5);
+    --close-btn-bg: rgba(0, 0, 0, 0.5);
+    --close-btn-text: #ff6b6b;
+    --close-btn-border: #555555;
+    --close-btn-hover-bg: rgba(255, 107, 107, 0.3);
+    --close-btn-shadow: rgba(0, 0, 0, 0.5);
+    --table-bg: #1a1a1a;
+    --table-hover-bg: #404040;
+    --table-shadow: rgba(0, 0, 0, 0.6);
+    --subtitle-bg: rgba(0, 204, 194, 0.37);
+    --sub-item-text: #b0bec5;
+}
+
+[data-theme="light"],
+body.light-mode {
+    /* ライトテーマ切り替え用 */
+    --bg-color: #f5f5f5;
+    --text-color: #333333;
+    --text-muted: #666666;
+    --border-color: #dddddd;
+
+    /* ヘッダー・サイドバー・カード類 */
+    --header-bg: #ffffff;
+    --sidebar-bg: #e9e9e9;
+    --card-bg: #ffffff;
+    --input-bg: #ffffff;
+    --input-border: #cccccc;
+
+    /* アクセント・プライマリカラー */
+    --primary-color: #0a9396;
+    --primary-hover: #005f73;
+    --primary-text: #ffffff;
+    --app-title-color: #005f73;
+    --status-msg-color: #005f73;
+
+    /* フォーカス・入力枠 */
+    --ncode-bg: #ffffff;
+    --ncode-focus-bg: #ffffff;
+    --ncode-border: #cccccc;
+    --ncode-focus-border: #ccc900;
+    --ncode-focus-shadow: rgba(0, 122, 204, 0.25);
+
+    /* ホバー・選択状態 */
+    --list-hover-bg: #dcdcdc;
+    --list-selected-bg: #007acc;
+    --list-selected-text: #ffffff;
+
+    /* 進捗バー・トースト */
+    --progress-bg: #e0e0e0;
+    --progress-searching: #2a9d8f;
+    --progress-saving: #e9c46a;
+    --toast-bg: #2a9d8f;
+    --toast-text: #ffffff;
+
+    /* スクロールバー用 */
+    --scrollbar-track: #f1f1f1;
+    --scrollbar-thumb: #747474;
+    --scrollbar-thumb-hover: #575656;
+
+    /* ヘルプ・変更履歴用の変数追加（ライトモード用調整） */
+    --heading-color: #004499;
+    --heading-shadow: rgba(0, 102, 204, 0.2);
+    --close-btn-bg: rgba(255, 255, 255, 0.8);
+    --close-btn-text: #d93838;
+    --close-btn-border: #cccccc;
+    --close-btn-hover-bg: rgba(217, 56, 56, 0.15);
+    --close-btn-shadow: rgba(0, 0, 0, 0.15);
+    --table-bg: #ffffff;
+    --table-hover-bg: #f0f4f8;
+    --table-shadow: rgba(0, 0, 0, 0.1);
+    --subtitle-bg: rgba(0, 197, 204, 0.15);
+    --sub-item-text: #546e7a;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-/* デフォルト：ダークモード */
-body {
+body,
+.main-container {
     font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
     height: 100vh;
     display: flex;
     flex-direction: column;
-    background-color: #1c2526;
-    color: #e0e0e0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
 }
 
 header {
@@ -25,25 +151,29 @@ header {
     align-items: center;
     margin-bottom: 8px;
     flex-shrink: 0;
-    background-color: #121819;
-    border-bottom: 1px solid #2a3638;
+    background-color: var(--header-bg);
+    border-bottom: 1px solid var(--border-color);
     padding: 12px 20px;
 }
+
 .header h1 {
     margin: 0;
     font-size: 1.3rem;
 }
+
 .title-group {
     display: flex;
-    align-items: center; /* 垂直位置を中央揃えに変更 */
+    align-items: center;
     gap: 12px;
 }
+
 .title-icon {
     width: 26px;
     height: 26px;
     object-fit: contain;
     cursor: pointer;
 }
+
 .app-title {
     display: flex;
     align-items: center;
@@ -51,23 +181,24 @@ header {
     font-size: 1.5rem;
     margin: 0;
     cursor: pointer;
-    color: #8dffc6;
+    color: var(--app-title-color);
 }
+
 .ver-title {
     font-size: 1rem;
     margin: 0;
-    color: #d2d2d2;
+    color: var(--text-muted);
     cursor: pointer;
-    line-height: 1; /* 高さのズレを防ぐため調整 */
+    line-height: 1;
 }
 
 /* ★ リスト幅サイズ変更対応：.sidebar の幅設定 */
 .sidebar {
-    width: 280px;         /* 初期幅 */
-    min-width: 150px;     /* 最小幅 */
-    flex-shrink: 0;       /* フレックスボックス内で勝手に縮まないように固定 */
-    background-color: #161e1f;
-    border-right: 1px solid #2a3638;
+    width: 280px;
+    min-width: 150px;
+    flex-shrink: 0;
+    background-color: var(--sidebar-bg);
+    border-right: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
     border-radius: 4px;
@@ -75,29 +206,28 @@ header {
     box-sizing: border-box;
 }
 
-/* サイドバーのヘッダーレイアウト */
 .sidebar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 8px;
 }
-/* 一括設定ボタンのスタイル */
+
 .selection-buttons {
     display: flex;
     gap: 4px;
 }
+
 .btn-sm {
     font-size: 11px;
     padding: 2px 6px;
     cursor: pointer;
     border: none;
     border-radius: 4px;
-    background-color: #0a9396;
-    color: white;
+    background-color: var(--primary-color);
+    color: var(--primary-text);
 }
 
-/* リストアイテム */
 #textList li {
     padding: 8px 10px;
     font-size: 13px;
@@ -110,127 +240,47 @@ header {
     align-items: center;
     gap: 8px;
 }
+
 #textList li input[type="checkbox"] {
     cursor: pointer;
 }
+
 #textList li:hover {
-    background-color: #2a3638;
+    background-color: var(--list-hover-bg);
 }
+
 #textList li.selected {
-    background-color: #005f73;
-    color: #ffffff;
+    background-color: var(--list-selected-bg);
+    color: var(--list-selected-text);
 }
 
 #textViewer {
-    background-color: #1c2526;
-    color: #e0e0e0;
+    background-color: var(--card-bg);
+    color: var(--text-color);
     border: none;
 }
 
 .search-bar input {
-    background-color: #2a3638;
-    color: #e0e0e0;
-    border: 1px solid #444;
-}
-
-/* 明示的なダークモード指定（body.dark-mode） */
-body.dark-mode {
-    background-color: #1c2526;
-    color: #e0e0e0;
-}
-
-body.dark-mode header {
-    background-color: #121819;
-    border-bottom: 1px solid #2a3638;
-}
-
-body.dark-mode .sidebar {
-    background-color: #161e1f;
-    border-right: 1px solid #2a3638;
-}
-
-body.dark-mode #textList li:hover {
-    background-color: #2a3638;
-}
-
-body.dark-mode #textList li.selected {
-    background-color: #005f73;
-    color: #ffffff;
-}
-
-body.dark-mode #textViewer {
-    background-color: #1c2526;
-    color: #e0e0e0;
-    border: none;
-}
-
-body.dark-mode .search-bar input {
-    background-color: #2a3638;
-    color: #e0e0e0;
-    border: 1px solid #444;
-}
-
-/* ライトモード切り替え時（body.light-mode） */
-body.light-mode {
-    background-color: #f5f5f5;
-    color: #333333;
-}
-
-body.light-mode header {
-    background-color: #ffffff;
-    border-bottom: 1px solid #dddddd;
-}
-
-body.light-mode .sidebar {
-    background-color: #e9e9e9;
-    border-right: 1px solid #dddddd;
-}
-
-body.light-mode #textList li:hover {
-    background-color: #dcdcdc;
-}
-
-body.light-mode #textList li.selected {
-    background-color: #007acc;
-    color: #ffffff;
-}
-
-body.light-mode #textViewer {
-    background-color: #ffffff;
-    color: #333333;
-    border: none;
-}
-
-body.light-mode .search-bar input {
-    background-color: #ffffff;
-    color: #333333;
-    border: 1px solid #ccc;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border: 1px solid var(--input-border);
 }
 
 /* テーマスイッチボタン */
 .theme-switch button {
     font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
     background: transparent;
-    border: 1px solid #444;
+    border: 1px solid var(--input-border);
     border-radius: 4px;
     padding: 4px 8px;
     font-size: 16px;
     cursor: pointer;
+    color: var(--text-color);
     transition: background-color 0.2s, border-color 0.2s;
 }
-body.dark-mode .theme-switch button {
-    border-color: #2a3638;
-    color: #e0e0e0;
-}
-body.dark-mode .theme-switch button:hover {
-    background-color: #2a3638;
-}
-body.light-mode .theme-switch button {
-    border-color: #ccc;
-    color: #333333;
-}
-body.light-mode .theme-switch button:hover {
-    background-color: #e9e9e9;
+
+.theme-switch button:hover {
+    background-color: var(--list-hover-bg);
 }
 
 main {
@@ -247,37 +297,29 @@ main {
     align-items: center;
     gap: 10px;
 }
+
 /* Nコード入力欄の基本スタイルとフォーカス時の強調定義 */
 #ncodeInput {
-    max-width: 140px;
+    max-width: 120px;
     flex-shrink: 0;
     padding: 8px 12px;
     font-size: 20px;
-    border: 2px solid #3a484a;
+    text-align: center;
+    border: 2px solid var(--ncode-border);
     border-radius: 4px;
-    background-color: #121819;
-    color: #ffffff;
+    background-color: var(--ncode-bg);
+    color: var(--text-color);
     outline: none;
     transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
-/* ★ フォーカス（アクティブ）時の強調表示 */
+
 #ncodeInput:focus {
-    border-color: #e7e301;             /* 枠線を明瞭な色に変更 */
-    background-color: #182224;         /* 背景色を少し明るく */
-    box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.35); /* 外側に発光・ハイライト効果 */
+    border-color: var(--ncode-focus-border);
+    background-color: var(--ncode-focus-bg);
+    box-shadow: 0 0 0 3px var(--ncode-focus-shadow);
 }
-/* ライトモード時のフォーカス表示 */
-body.light-mode #ncodeInput {
-    border-color: #ccc;
-    background-color: #ffffff;
-    color: #333333;
-}
-body.light-mode #ncodeInput:focus {
-    border-color: #ccc900;
-    background-color: #ffffff;
-    box-shadow: 0 0 0 3px rgba(0, 122, 204, 0.25);
-}
-/* 作品タイトル表示領域（余白を自動で埋める） */
+
+/* 作品タイトル表示領域 */
 .title-display {
     flex: 1;
     font-size: 20px;
@@ -287,18 +329,9 @@ body.light-mode #ncodeInput:focus {
     overflow: hidden;
     text-overflow: ellipsis;
     border-radius: 4px;
-}
-/* ダークモード時のタイトル表示背景スタイル */
-body.dark-mode .title-display {
-    background-color: #161e1f;
-    color: #e0e0e0;
-    border: 1px solid #2a3638;
-}
-/* ライトモード時のタイトル表示背景スタイル */
-body.light-mode .title-display {
-    background-color: #ffffff;
-    color: #333333;
-    border: 1px solid #ccc;
+    background-color: var(--sidebar-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
 }
 
 .search-bar input {
@@ -315,8 +348,8 @@ body.light-mode .title-display {
     cursor: pointer;
     border: none;
     border-radius: 4px;
-    background-color: #0a9396;
-    color: white;
+    background-color: var(--primary-color);
+    color: var(--primary-text);
 }
 
 .search-bar button:disabled {
@@ -327,7 +360,7 @@ body.light-mode .title-display {
 .status-message {
     font-size: 13px;
     height: 18px;
-    color: #94d2bd;
+    color: var(--status-msg-color);
 }
 
 .content-container {
@@ -340,7 +373,7 @@ body.light-mode .title-display {
 .sidebar h3 {
     font-size: 14px;
     margin-bottom: 8px;
-    user-select: none; /* リサイズ操作中の文字列選択を防止 */
+    user-select: none;
 }
 
 #textList {
@@ -351,8 +384,8 @@ body.light-mode .title-display {
 }
 
 .viewer {
-    flex: 1;              /* 余りの幅をすべて自動で埋める */
-    min-width: 0;         /* 横幅調整時に溢れを防止 */
+    flex: 1;
+    min-width: 0;
     display: flex;
 }
 
@@ -369,31 +402,26 @@ body.light-mode .title-display {
     box-sizing: border-box;
 }
 
-/* スクロールバーのカスタマイズ（ダークテーマ用: textList & textViewer） */
-body.dark-mode #textList::-webkit-scrollbar,
-body.dark-mode #textViewer::-webkit-scrollbar,
+/* スクロールバーのカスタマイズ */
 #textList::-webkit-scrollbar,
 #textViewer::-webkit-scrollbar {
     width: 8px;
 }
-body.dark-mode #textList::-webkit-scrollbar-track,
-body.dark-mode #textViewer::-webkit-scrollbar-track,
+
 #textList::-webkit-scrollbar-track,
 #textViewer::-webkit-scrollbar-track {
-    background: #121212;
+    background: var(--scrollbar-track);
 }
-body.dark-mode #textList::-webkit-scrollbar-thumb,
-body.dark-mode #textViewer::-webkit-scrollbar-thumb,
+
 #textList::-webkit-scrollbar-thumb,
 #textViewer::-webkit-scrollbar-thumb {
-    background: #999;
+    background: var(--scrollbar-thumb);
     border-radius: 4px;
 }
-body.dark-mode #textList::-webkit-scrollbar-thumb:hover,
-body.dark-mode #textViewer::-webkit-scrollbar-thumb:hover,
+
 #textList::-webkit-scrollbar-thumb:hover,
 #textViewer::-webkit-scrollbar-thumb:hover {
-    background: #777;
+    background: var(--scrollbar-thumb-hover);
 }
 
 /* 進捗バーコンテナ */
@@ -404,46 +432,48 @@ body.dark-mode #textViewer::-webkit-scrollbar-thumb:hover,
     display: flex;
     align-items: center;
 }
+
 .progress-container.hidden {
     display: none;
 }
+
 progress {
     width: 100%;
     height: 100%;
     border: none;
     border-radius: 4px;
     overflow: hidden;
-    background-color: #2a3638;
+    background-color: var(--progress-bg);
 }
+
 /* 検索時：緑色 */
 progress.searching::-webkit-progress-value {
-    background-color: #2a9d8f;
+    background-color: var(--progress-searching);
     transition: width 0.3s ease;
 }
+
 /* 保存時：黄色 */
 progress.saving::-webkit-progress-value {
-    background-color: #e9c46a;
+    background-color: var(--progress-saving);
     transition: width 0.1s ease;
 }
+
 progress::-webkit-progress-bar {
-    background-color: #2a3638;
+    background-color: var(--progress-bg);
     border-radius: 4px;
-}
-/* ライトモード時の背景調整 */
-body.light-mode progress::-webkit-progress-bar {
-    background-color: #e0e0e0;
 }
 
 /* 中止モード時のボタンデザイン */
 button.cancel-mode {
-    background-color: #e76f51;
-    color: #ffffff;
-}
-button.cancel-mode:hover {
-    background-color: #d65a3b;
+    background-color: var(--btn-cancel-bg);
+    color: var(--btn-cancel-text);
 }
 
-/* トーストメッセージ用コンテナ（画面上部中央） */
+button.cancel-mode:hover {
+    background-color: var(--btn-cancel-hover);
+}
+
+/* トーストメッセージ用コンテナ */
 .toast-container {
     position: fixed;
     top: 20px;
@@ -460,8 +490,8 @@ button.cancel-mode:hover {
 /* トースト本体 */
 .toast-message {
     pointer-events: auto !important;
-    background-color: #2a9d8f;
-    color: #ffffff;
+    background-color: var(--toast-bg);
+    color: var(--toast-text);
     font-size: 20px;
     padding: 12px 24px;
     border-radius: 6px;
@@ -473,7 +503,7 @@ button.cancel-mode:hover {
     animation: toastIn 0.3s ease forwards;
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
-/* 非表示時のスタイル */
+
 .toast-message.hide {
     animation: none !important;
     opacity: 0;
@@ -486,6 +516,7 @@ button.cancel-mode:hover {
     overflow: hidden;
     transition: opacity 0.3s ease, transform 0.3s ease, max-height 0.3s ease, padding 0.3s ease;
 }
+
 @keyframes toastIn {
     from {
         opacity: 0;
@@ -499,19 +530,221 @@ button.cancel-mode:hover {
 
 .copyright-container {
     display: flex;
-    justify-content: space-between; /* 子要素を両端（左端と右端）に配置 */
-    align-items: center;            /* 上下の縦中央揃え */
-    width: 100%;                     /* 親要素の幅を画面（または親要素）いっぱいに広げる */
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
 }
 
-/* style.css 等に追加 */
 .status-display {
-    max-width: 100px;
+    max-width: 80px;
     width: 100%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: center;
     font-weight: bold;
-    /* 必要に応じてパディングや背景色等を調整 */
+    font-size: 20px;
+}
+
+
+/* ヘルプ、変更履歴 */
+.help-container,
+.changelog-container {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    font-size: calc(0.8vw + 0.8vh + 0.2vmin);
+    padding: 1em;
+    display: none;
+    flex-direction: column;
+    color: var(--text-color);
+}
+.header-row {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-bottom: 0.5em;
+}
+h1 {
+    font-size: 1.6em;
+    color: var(--app-title-color);
+    text-shadow: 0 0 0.8em var(--heading-shadow);
+    margin: 0;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+#helpCloseBtn,
+#changelogCloseBtn {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--close-btn-bg);
+    color: var(--close-btn-text);
+    border: 1px solid var(--close-btn-border);
+    border-radius: 50%;
+    width: 1.8em;
+    height: 1.8em;
+    font-size: 0.8em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0.6em var(--close-btn-shadow);
+    transition: all 0.2s ease;
+    z-index: 1000;
+}
+#helpCloseBtn:hover,
+#changelogCloseBtn:hover {
+    background: var(--close-btn-hover-bg);
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 0 1em var(--close-btn-hover-bg);
+}
+#helpCloseBtn:active,
+#changelogCloseBtn:active {
+    transform: translateY(-50%) scale(0.95);
+}
+.help-table-container {
+    width: 100%;
+    margin: 0 auto;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    box-shadow: 0 0.6em 2em var(--table-shadow);
+    background-color: var(--table-bg);
+    font-size: 0.9em;
+    font-weight: 400;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    max-width: none;
+    height: calc(96vh - 7em);
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+.colgroup col:nth-child(1) { width: 23%; }
+.colgroup col:nth-child(2) { width: 9%; }
+.colgroup col:nth-child(3) { width: 9%; }
+.colgroup col:nth-child(4) { width: 18%; }
+.colgroup col:nth-child(5) { width: auto; }
+.header-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.body-table {
+    flex: 1;
+    overflow-y: auto;
+    display: block;
+}       
+/* スクロールバーのカスタマイズ */
+.body-table::-webkit-scrollbar,
+.changelog-Content::-webkit-scrollbar {
+    width: 8px;
+}
+.body-table::-webkit-scrollbar-track,
+.changelog-Content::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+}
+.body-table::-webkit-scrollbar-thumb,
+.changelog-Content::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 4px;
+}
+.body-table::-webkit-scrollbar-thumb:hover,
+.changelog-Content::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+}
+.body-table tr:hover {
+    background-color: var(--table-hover-bg);
+    transition: background-color 0.3s ease;
+}
+.header-table th {
+    background-color: var(--primary-color);
+    color: var(--primary-text);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.5em 0.5em;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    white-space: normal;
+    word-wrap: break-word;
+    font-size: 0.9em;
+    line-height: 1.2;
+}
+.body-table td {
+    padding: 0.5em 0.8em;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    white-space: normal;
+    word-wrap: break-word;
+    font-size: 0.9em;
+    line-height: 1.0;
+    color: var(--text-color);
+}
+.body-table td:nth-child(1) {
+    text-align: left;
+    font-weight: 600;
+}
+.body-table td:nth-child(2) {
+    font-size: 1.1em;
+}
+.body-table td:nth-child(5) {
+    text-align: left;
+    font-size: 0.7em;
+}
+.sub-title {
+    text-decoration: underline;
+    background-color: var(--subtitle-bg);
+}
+.body-table td.no-data { 
+    color: var(--text-muted);
+}
+caption {
+    caption-side: top;
+    font-size: 1.05em;
+    color: var(--text-muted);
+    font-weight: 100;
+    text-align: center;
+    padding: 0.6em;
+    background-color: var(--table-bg);
+    line-height: 1.3;
+}
+.icon { 
+    font-size: 1.2em; 
+}
+
+/* 変更履歴のコンテナ */
+.changelog-Content {
+    overflow-y: auto;
+    font-size: 1.5rem;
+    color: var(--text-color);
+}
+
+/* 履歴リストのスタイル */
+.changelog-list {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 0;
+}
+.changelog-list li {
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 6px;
+    white-space: pre-wrap;
+}
+.changelog-list li.sub-item {
+    padding-left: 15px;
+    color: var(--sub-item-text);
+    border-bottom: none;
+    padding-bottom: 2px;
+    margin-bottom: 0;
+}
+.changelog-list li:hover {
+    background-color: var(--table-hover-bg);
+    transition: background-color 0.3s ease;
 }
