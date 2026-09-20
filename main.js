@@ -173,7 +173,26 @@ ipcMain.handle('save-files', async (event, { ncode, title, status, items }) => {
     // --- 省略 (ファイル書き込み処理) ---
     const total = items.length;
     for (let i = 0; i < total; i++) {
-        // ... (ファイル作成・書き込み処理は変更なし)
+        const item = items[i];
+        const seqStr = String(item.seqNo).padStart(4, '0');
+        let rawFilename = '';
+
+        if (item.type === 'overview') {
+            rawFilename = `${seqStr}_概要.txt`;
+        } else {
+            rawFilename = `${seqStr}_${item.subtitle}.txt`;
+        }
+
+        const safeFilename = rawFilename.replace(/[\\/:*?"<>|]/g, '_');
+        const savePath = path.join(targetDir, safeFilename);
+
+        fs.writeFileSync(savePath, item.content, 'utf8');
+
+        // 保存進捗をレンダラーへ通知
+        event.sender.send('save-progress', {
+            current: i + 1,
+            total: total
+        });
     }
 
     return { success: true, count: total, dir: targetDir };
