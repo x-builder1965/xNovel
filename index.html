@@ -1,9 +1,10 @@
 <!-- -- index.html ---------------------------------------------------
  copyright = 'Copyright © 2026- @x-builder, Japan';
  email     = 'x-builder@gmail.com';
- appName   = 'xNovel -小説家になろうダウンローダー- Ver1.03.0';
+ appName   = 'xNovel -小説家になろうダウンローダー- Ver1.04.0';
  ---------------------------------------------------------------------
  【変更履歴】
+  2026-09-20 Ver1.04.0 リストに保存対象チェック、全設定・全解除を追加。
   2026-09-20 Ver1.03.0 短編（1話完結）小説の取得に対応。
   2026-09-20 Ver1.02.0 リストのサブタイトルにシーケンシャルNoを追加。
   2026-09-20 Ver1.01.0 掲載状況の追加と作成フォルダ名形式の変更。
@@ -23,7 +24,7 @@
                 <img src="xNovel.ico" alt="xNovel Icon" class="title-icon">
                 xNovel -小説家になろうダウンローダー- 
             </h1>
-            <div class="ver-title">Ver1.03.0</div>
+            <div class="ver-title">Ver1.04.0</div>
         </div>
         <div class="theme-switch">
             <button id="themeToggle" type="button" aria-label="テーマ切り替え">☀️</button>
@@ -43,7 +44,13 @@
         </div>
         <section class="content-container">
             <aside class="sidebar">
-                <h3>リスト</h3>
+                <div class="sidebar-header">
+                    <h3>リスト</h3>
+                    <div class="selection-buttons">
+                        <button type="button" id="selectAllBtn" class="btn-sm">全選択</button>
+                        <button type="button" id="deselectAllBtn" class="btn-sm">全解除</button>
+                    </div>
+                </div>
                 <ul id="textList"></ul>
             </aside>
             <section class="viewer">

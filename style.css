@@ -1,7 +1,7 @@
 /* -- style.css --------------------------------------------------------
  * copyright = 'Copyright © 2026- @x-builder, Japan';
  * email     = 'x-builder@gmail.com';
- * appName   = 'xNovel -小説家になろうダウンローダー- Ver1.01.0';
+ * appName   = 'xNovel -小説家になろうダウンローダー- Ver1.04.0';
  * --------------------------------------------------------------------- */
 * {
     box-sizing: border-box;
@@ -75,10 +75,47 @@ header {
     box-sizing: border-box;
 }
 
+/* サイドバーのヘッダーレイアウト */
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+/* 一括設定ボタンのスタイル */
+.selection-buttons {
+    display: flex;
+    gap: 4px;
+}
+.btn-sm {
+    font-size: 11px;
+    padding: 2px 6px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    background-color: #0a9396;
+    color: white;
+}
+
+/* リストアイテム */
+#textList li {
+    padding: 8px 10px;
+    font-size: 13px;
+    cursor: pointer;
+    border-radius: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+#textList li input[type="checkbox"] {
+    cursor: pointer;
+}
 #textList li:hover {
     background-color: #2a3638;
 }
-
 #textList li.selected {
     background-color: #005f73;
     color: #ffffff;
@@ -311,16 +348,6 @@ body.light-mode .title-display {
     overflow-y: auto;
     flex: 1;
     width: 100%;
-}
-
-#textList li {
-    padding: 8px 10px;
-    font-size: 13px;
-    cursor: pointer;
-    border-radius: 3px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .viewer {

@@ -1,7 +1,7 @@
 // -- renderer.js ------------------------------------------------------
 // copyright = 'Copyright © 2026- @x-builder, Japan';
 // email     = 'x-builder@gmail.com';
-// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.02.0';
+// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.04.0';
 // ---------------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
     const themeToggle = document.getElementById('themeToggle');
@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const statusMessage = document.getElementById('statusMessage');
     const textList = document.getElementById('textList');
     const textViewer = document.getElementById('textViewer');
+    const selectAllBtn = document.getElementById('selectAllBtn');
+    const deselectAllBtn = document.getElementById('deselectAllBtn');
 
     // ★ サイドバー要素を取得
     const sidebar = document.querySelector('.sidebar');
@@ -225,66 +227,104 @@ document.addEventListener('DOMContentLoaded', () => {
         progressBar.value = current;
     });
 
+    // 全選択ボタンクリック
+    selectAllBtn.addEventListener('click', () => {
+        const checkboxes = textList.querySelectorAll('.item-checkbox');
+        checkboxes.forEach((cb) => {
+            cb.checked = true;
+        });
+    });
+    
+    // 全解除ボタンクリック
+    deselectAllBtn.addEventListener('click', () => {
+        const checkboxes = textList.querySelectorAll('.item-checkbox');
+        checkboxes.forEach((cb) => {
+            cb.checked = false;
+        });
+    });
+    
     // 検索・中止ボタンクリックハンドラ
     searchBtn.addEventListener('click', async () => {
         if (isSearching) {
             window.api.cancelFetchNovel();
             statusMessage.textContent = '検索を中止しています...';
             saveBtn.disabled = true;
-            statusDisplay.textContent = ''; // ★ 初期化
+            statusDisplay.textContent = '';
             titleDisplay.textContent = '';
             textList.innerHTML = '';
             textViewer.value = '';
             return;
         }
-
+    
         const rawNcode = ncodeInput.value.trim();
         if (!rawNcode) {
             showToast('Nコードを入力してください。');
             ncodeInput.focus();
             return;
         }
-
+    
         const ncode = rawNcode.toLowerCase();
         ncodeInput.value = ncode;
-
+    
         isSearching = true;
         searchBtn.textContent = '🔎';
         searchBtn.classList.add('cancel-mode');
         
         saveBtn.disabled = true;
-        statusDisplay.textContent = ''; // ★ 初期化
+        statusDisplay.textContent = '';
         titleDisplay.textContent = '';
         textList.innerHTML = '';
         textViewer.value = '';
         statusMessage.textContent = '作品概要を取得中...';
-
+    
         showProgressBar('searching');
-
+    
         try {
             currentNovelData = await window.api.fetchNovel(ncode);
             
             statusMessage.textContent = `「${currentNovelData.title}」の全データ取得完了 (${currentNovelData.items.length - 1}話 + 概要)`;
-
-            // リスト描画
+    
+            // リスト描画（チェックボックス追加）
             let i = 0;
-            currentNovelData.items.forEach((item) => {
+            currentNovelData.items.forEach((item, index) => {
                 const seqStr = String(i).padStart(4, '0');
                 const li = document.createElement('li');
-                li.textContent = `${seqStr}_${item.title}`;
+    
+                // チェックボックス作成
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'item-checkbox';
+                checkbox.checked = true; // 初期状態はチェックON
+                // データ参照用インデックスまたは識別IDを保持
+                checkbox.dataset.index = index;
+    
+                // チェックボックスクリック時にliへのイベント伝播（選択切り替え）を止める
+                checkbox.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                });
+    
+                // ラベル作成
+                const label = document.createElement('span');
+                label.textContent = `${seqStr}_${item.title}`;
+    
+                li.appendChild(checkbox);
+                li.appendChild(label);
+    
+                // リストクリックでビューア表示
                 li.addEventListener('click', () => {
                     document.querySelectorAll('#textList li').forEach((el) => el.classList.remove('selected'));
                     li.classList.add('selected');
                     textViewer.value = item.content;
                 });
+    
                 textList.appendChild(li);
                 i++;
             });
-
+    
             if (textList.firstChild) {
                 textList.firstChild.click();
             }
-
+    
             saveBtn.disabled = false;
         } catch (error) {
             statusMessage.textContent = error.message;
@@ -300,18 +340,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 保存処理
+    // 保存処理（チェックONのアイテムのみ保存対象にする）
     saveBtn.addEventListener('click', async () => {
         if (!currentNovelData || !currentNovelData.items.length) {
             return;
         }
     
+        // チェックされている項目のインデックスを抽出
+        const checkedBoxes = Array.from(textList.querySelectorAll('.item-checkbox:checked'));
+        if (checkedBoxes.length === 0) {
+            showToast('保存対象の項目が選択されていません。');
+            return;
+        }
+    
+        // チェックがついているアイテムのみフィルタリング
+        const selectedItems = checkedBoxes.map((cb) => {
+            const index = parseInt(cb.dataset.index, 10);
+            return currentNovelData.items[index];
+        });
+    
         try {
             const result = await window.api.saveFiles({
-                ncode: currentNovelData.ncode, // ★ ncode を追加して渡す
-                status: currentNovelData.status, // ★ 連載状況を保存処理に渡す
+                ncode: currentNovelData.ncode,
+                status: currentNovelData.status,
                 title: currentNovelData.title,
-                items: currentNovelData.items
+                items: selectedItems // ★ チェックが入ったアイテムのみ渡す
             });
     
             if (result.success) {
