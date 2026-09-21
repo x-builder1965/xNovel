@@ -1,7 +1,7 @@
 // -- renderer.js ------------------------------------------------------
 // copyright = 'Copyright © 2026- @x-builder, Japan';
 // email     = 'x-builder@gmail.com';
-// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.06.0';
+// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.07.0';
 // ---------------------------------------------------------------------
 // 🔲イミディエイト定義🔲
 const RESIZE_HANDLE_WIDTH = 8; // 右端判定エリアの幅 (px)
@@ -478,7 +478,7 @@ function registerSearchBtnClick() {
     
                 // ラベル作成
                 const label = document.createElement('span');
-                label.textContent = `${seqStr}_${item.title}`;
+                label.textContent = `${seqStr}_${item.subtitle}`;
     
                 li.appendChild(checkbox);
                 li.appendChild(label);

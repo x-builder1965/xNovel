@@ -1,7 +1,7 @@
 // -- main.js ----------------------------------------------------------
 // copyright = 'Copyright © 2026- @x-builder, Japan';
 // email     = 'x-builder@gmail.com';
-// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.05.0';
+// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.07.0';
 // ---------------------------------------------------------------------
 // 🔲モジュールインポート定義🔲
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
@@ -98,9 +98,10 @@ function registerIpcMainFetchNovel() {
         const overviewContent = `タイトル: ${novelTitle}\n作者名: ${meta.writer}\n連載状況: ${novelStatus}\n話数: 全${generalAllNo}話\n\n【あらすじ】\n${meta.story}`;
         items.push({
             ncode: formattedNcode,
+            title: novelTitle,
             type: 'overview',
             seqNo: 0,
-            title: '概要',
+            subtitle: '概要',
             content: overviewContent
         });
 
@@ -130,11 +131,10 @@ function registerIpcMainFetchNovel() {
 
                 items.push({
                     ncode: formattedNcode,
+                    title: novelTitle,
                     type: 'episode',
                     seqNo: 1,
-                    epNoStr: '本文',
                     subtitle: epTitle,
-                    title: epTitle,
                     content: `${epTitle}\n\n${epBody}`
                 });
 
@@ -170,11 +170,10 @@ function registerIpcMainFetchNovel() {
 
                 items.push({
                     ncode: formattedNcode,
+                    title: novelTitle,
                     type: 'episode',
                     seqNo: i,
-                    epNoStr: `第${i}話`,
                     subtitle: epTitle,
-                    title: `第${i}話: ${epTitle}`,
                     content: `${epTitle}\n\n${epBody}`
                 });
 
