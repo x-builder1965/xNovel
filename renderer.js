@@ -1,10 +1,26 @@
 // -- renderer.js ------------------------------------------------------
 // copyright = 'Copyright © 2026- @x-builder, Japan';
 // email     = 'x-builder@gmail.com';
-// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.05.0';
+// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.06.0';
 // ---------------------------------------------------------------------
 // 🔲イミディエイト定義🔲
 const RESIZE_HANDLE_WIDTH = 8; // 右端判定エリアの幅 (px)
+// ショートカットキーと各ボタンのIDのマッピング定義
+const shortcutMap = {
+    'ctrl+t':           { control: 'themeToggle' },
+    'ctrl+n':           { control: 'searchBtn' },
+    'ctrl+s':           { control: 'saveBtn' },
+    'ctrl+a':           { control: 'selectAllBtn' },
+    'ctrl+r':           { control: 'deselectAllBtn' },
+};
+// 編集中無効にするショートカットキー定義
+const disableKeyMap = new Set([
+    'ctrl+c',
+    'ctrl+x',
+    'ctrl+v',
+    'ctrl+z',
+    'ctrl+y',
+]);
 
 // 🔲DOM定義🔲
 let mainContainer = null;
@@ -64,6 +80,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     registerWindowApiOnSaveProgress();
 
     // 🔲documentイベントリスナー登録🔲
+    // ドキュメントのキーダウンイベント
+    registerDocumentKeydown();
     // ドラッグ中の処理 (ドキュメント全体で移動を監視)
     registerDocumentMousemove();
     // マウスアップでドラッグ終了
@@ -230,6 +248,58 @@ function registerWindowApiOnSaveProgress() {
 }
 
 // 🔲documentイベントリスナー登録🔲
+// ドキュメントのキーダウンイベント
+function registerDocumentKeydown() {
+    document.addEventListener('keydown', (e) => {
+        // 押された修飾キーとメインキーを組み合わせてキー文字列を作成
+        const modifiers = [];
+        
+        // Ctrlキー または MacのCommandキー
+        if (e.ctrlKey || e.metaKey) modifiers.push('ctrl');
+        if (e.shiftKey) modifiers.push('shift');
+        if (e.altKey) modifiers.push('alt');
+    
+        const mainKey = e.key.toLowerCase();
+    
+        // 修飾キー自体が押されただけの時は処理しない
+        if (['control', 'shift', 'alt', 'meta'].includes(mainKey)) {
+            return;
+        }
+    
+        modifiers.push(mainKey);
+    
+        // 'ctrl+ ' のような文字列を生成 (スペースキーは ' ')
+        const shortcutKey = modifiers.join('+');
+    
+        // textInput（あるいは入力エリア全般）のフォーカス判定
+        const activeEl = document.activeElement;
+        const isEditing = activeEl && (
+            activeEl.id === 'textInput' || 
+            activeEl.tagName === 'INPUT' || 
+            activeEl.tagName === 'TEXTAREA' || 
+            activeEl.isContentEditable
+        );
+
+        // 編集中かつ無効化対象のショートカットキーの場合は処理をスキップ
+        if (isEditing && disableKeyMap.has(shortcutKey)) {
+            return;
+        }
+
+        // マッピングの取得
+        const shortcutConfig = shortcutMap[shortcutKey];
+    
+        // マッピングが存在するか確認
+        if (shortcutConfig) {
+            // コントロール名（ボタンID）の取得と実行
+            const btn = document.getElementById(shortcutConfig.control);
+            if (btn) {
+                e.preventDefault(); // スペース入力やブラウザ標準動作のキャンセル
+                btn.click();        // ボタンクリックを実行
+            }
+        }
+    });
+}
+
 // ドラッグ中の処理 (ドキュメント全体で移動を監視)
 function registerDocumentMousemove() {
     document.addEventListener('mousemove', (e) => {

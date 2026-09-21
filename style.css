@@ -1,7 +1,7 @@
 /* -- style.css --------------------------------------------------------
  * copyright = 'Copyright © 2026- @x-builder, Japan';
  * email     = 'x-builder@gmail.com';
- * appName   = 'xNovel -小説家になろうダウンローダー- Ver1.05.0';
+ * appName   = 'xNovel -小説家になろうダウンローダー- Ver1.006.0';
  * --------------------------------------------------------------------- */
 :root {
     /* デフォルト：ダークテーマ */
@@ -143,6 +143,9 @@ body,
     flex-direction: column;
     background-color: var(--bg-color);
     color: var(--text-color);
+}
+.main-container {
+    overflow: hidden;
 }
 
 header {
