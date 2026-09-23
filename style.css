@@ -1,7 +1,7 @@
 /* -- style.css --------------------------------------------------------
  * copyright = 'Copyright © 2026- @x-builder, Japan';
  * email     = 'x-builder@gmail.com';
- * appName   = 'xNovel -小説家になろうダウンローダー- Ver1.006.0';
+ * appName   = 'xNovel -小説家になろうダウンローダー- Ver1.08.0';
  * --------------------------------------------------------------------- */
 :root {
     /* デフォルト：ダークテーマ */
@@ -45,8 +45,10 @@
     --progress-bg: #2a3638;
     --progress-searching: #2a9d8f;
     --progress-saving: #e9c46a;
-    --toast-bg: #2a9d8f;
     --toast-text: #ffffff;
+    --toast-bg-info: #17a3b89f;     /* 青系（インフォメーション） */
+    --toast-bg-warning: #ffc10777;  /* 黄系（警告） */
+    --toast-bg-error: #dc3546ab;    /* 赤系（エラー） */
     
     /* スクロールバー用 */
     --scrollbar-track: #121212;
@@ -106,8 +108,10 @@ body.light-mode {
     --progress-bg: #e0e0e0;
     --progress-searching: #2a9d8f;
     --progress-saving: #e9c46a;
-    --toast-bg: #2a9d8f;
     --toast-text: #ffffff;
+    --toast-bg-info: #17a2b8;     /* 青系（インフォメーション） */
+    --toast-bg-warning: #ffc107;  /* 黄系（警告） */
+    --toast-bg-error: #dc3545;    /* 赤系（エラー） */
 
     /* スクロールバー用 */
     --scrollbar-track: #f1f1f1;
@@ -489,11 +493,9 @@ button.cancel-mode:hover {
     gap: 10px;
     pointer-events: none;
 }
-
-/* トースト本体 */
+/* トースト本体（共通スタイル） */
 .toast-message {
     pointer-events: auto !important;
-    background-color: var(--toast-bg);
     color: var(--toast-text);
     font-size: 20px;
     padding: 12px 24px;
@@ -505,6 +507,21 @@ button.cancel-mode:hover {
     text-align: center;
     animation: toastIn 0.3s ease forwards;
     transition: opacity 0.3s ease, transform 0.3s ease;
+}
+/* タイプ別の背景色・文字色設定 */
+.toast-message.info {
+    background-color: var(--toast-bg-info, #17a3b89f); /* 青 */
+    color: #ffffff;
+}
+
+.toast-message.warning {
+    background-color: var(--toast-bg-warning, #ffc10777); /* 黄 */
+    color: #ffffff;
+}
+
+.toast-message.error {
+    background-color: var(--toast-bg-error, #dc3546ab); /* 赤 */
+    color: #ffffff;
 }
 
 .toast-message.hide {

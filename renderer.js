@@ -1,7 +1,7 @@
 // -- renderer.js ------------------------------------------------------
 // copyright = 'Copyright © 2026- @x-builder, Japan';
 // email     = 'x-builder@gmail.com';
-// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.07.0';
+// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.08.0';
 // ---------------------------------------------------------------------
 // 🔲イミディエイト定義🔲
 const RESIZE_HANDLE_WIDTH = 8; // 右端判定エリアの幅 (px)
@@ -10,7 +10,7 @@ const shortcutMap = {
     'ctrl+t':           { control: 'themeToggle' },
     'ctrl+n':           { control: 'searchBtn' },
     'ctrl+s':           { control: 'saveBtn' },
-    'ctrl+a':           { control: 'selectAllBtn' },
+    'ctrl+e':           { control: 'selectAllBtn' },
     'ctrl+r':           { control: 'deselectAllBtn' },
 };
 // 編集中無効にするショートカットキー定義
@@ -20,6 +20,7 @@ const disableKeyMap = new Set([
     'ctrl+v',
     'ctrl+z',
     'ctrl+y',
+    'ctrl+a',
 ]);
 
 // 🔲DOM定義🔲
@@ -414,7 +415,6 @@ function registerDeselectAllBtnClick() {
         });
     });
 }
-
 // 検索・中止ボタンクリックハンドラ
 function registerSearchBtnClick() {
     searchBtn.addEventListener('click', async () => {
@@ -431,7 +431,7 @@ function registerSearchBtnClick() {
     
         const rawNcode = ncodeInput.value.trim();
         if (!rawNcode) {
-            showToast('Nコードを入力してください。');
+            showToast('Nコードを入力してください。', 'warning');
             ncodeInput.focus();
             return;
         }
@@ -468,10 +468,8 @@ function registerSearchBtnClick() {
                 checkbox.type = 'checkbox';
                 checkbox.className = 'item-checkbox';
                 checkbox.checked = true; // 初期状態はチェックON
-                // データ参照用インデックスまたは識別IDを保持
                 checkbox.dataset.index = index;
     
-                // チェックボックスクリック時にliへのイベント伝播（選択切り替え）を止める
                 checkbox.addEventListener('click', (e) => {
                     e.stopPropagation();
                 });
@@ -500,9 +498,25 @@ function registerSearchBtnClick() {
     
             saveBtn.disabled = false;
         } catch (error) {
-            statusMessage.textContent = error.message;
-            if (error.message !== '検索が中止されました。') {
-                showToast(`エラー: ${error.message}`);
+            // 例: "Error invoking remote method 'fetch-novel': UserError: 該当するNコードの作品が見つかりません。"
+            const rawMessage = error.message || '';
+
+            // 「UserError: 」以降の実際のメッセージテキストを抽出
+            let displayMessage = rawMessage;
+            if (rawMessage.includes('UserError: ')) {
+                displayMessage = rawMessage.split('UserError: ')[1];
+            } else if (rawMessage.includes('Error: ')) {
+                displayMessage = rawMessage.split('Error: ').pop();
+            }
+
+            statusMessage.textContent = displayMessage;
+
+            // エラーメッセージに 'UserError:' が含まれていればユーザーエラーとして処理
+            if (rawMessage.includes('UserError:')) {
+                showToast(displayMessage, 'warning');
+            } else {
+                // それ以外（通信エラーや予期せぬ例外）はシステムエラーとして処理
+                showToast(`システムエラー: ${displayMessage}`, 'error');
             }
         } finally {
             isSearching = false;
@@ -524,7 +538,7 @@ function registerSaveBtnClick() {
         // チェックされている項目のインデックスを抽出
         const checkedBoxes = Array.from(textList.querySelectorAll('.item-checkbox:checked'));
         if (checkedBoxes.length === 0) {
-            showToast('保存対象の項目が選択されていません。');
+            showToast('保存対象の項目が選択されていません。', 'warning');
             return;
         }
     
@@ -546,7 +560,7 @@ function registerSaveBtnClick() {
                 showToast(`${result.count}個のテキストファイルを保存しました。\n保存先: ${result.dir}`);
             }
         } catch (error) {
-            showToast(`保存エラー: ${error.message}`);
+            showToast(`保存エラー: ${error.message}`, 'error');
         } finally {
             hideProgressBar();
         }
@@ -588,7 +602,7 @@ function registerChangelogCloseBtnClick() {
 }
 
 // トーストメッセージ表示機能（上部中央・6000ms・ホバー時一時停止対応）
-function showToast(message) {
+function showToast(message, type = 'info', duration = 6000) {
     let container = document.getElementById('toastContainer');
     if (!container) {
         container = document.createElement('div');
@@ -597,11 +611,18 @@ function showToast(message) {
         document.body.appendChild(container);
     }
 
-    const toast = document.createElement('div');
-    toast.className = 'toast-message';
-    toast.textContent = message;
+    const icons = {
+        info: 'ℹ️',
+        warning: '⚠️',
+        error: '🚫'
+    };
+    const icon = icons[type] || icons.info;
 
-    let duration = 6000;
+    const toast = document.createElement('div');
+    // タイプ名（info / warning / error）をクラスとして付与
+    toast.className = `toast-message ${type}`;
+    toast.textContent = `${icon} ${message}`;
+
     let startTime = null;
     let timerId = null;
     let isDismissed = false;

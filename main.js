@@ -1,7 +1,7 @@
 // -- main.js ----------------------------------------------------------
 // copyright = 'Copyright © 2026- @x-builder, Japan';
 // email     = 'x-builder@gmail.com';
-// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.07.0';
+// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.08.0';
 // ---------------------------------------------------------------------
 // 🔲モジュールインポート定義🔲
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
@@ -11,6 +11,7 @@ const cheerio = require('cheerio');
 // 🔲イミディエイト定義🔲
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 // 🔲グローバル変数🔲
+let $;
 let mainWindow;
 let isFetchCancelled = false;
 
@@ -27,6 +28,14 @@ registerIpcMainFetchNovel();
 // テキストファイル群の保存処理
 registerIpcMainSaveNovel();
 
+// ユーザー起因のエラー（入力間違い・作品未存在・キャンセル等）を表すカスタムエラークラス
+class UserError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = 'UserError';
+        this.isUserError = true;
+    }
+}
 
 // 🔲windowイベントリスナー登録🔲
 // アプリ初期処理
@@ -58,33 +67,46 @@ function registerIpcMainFetchNovel() {
         const formattedNcode = ncode.toLowerCase().trim();
 
         const apiUrl = `https://api.syosetu.com/novelapi/api/?out=json&ncode=${formattedNcode}`;
-        const apiRes = await fetch(apiUrl, {
-            headers: { 'User-Agent': 'xNovel-Downloader/1.0' }
-        });
+        
+        let apiRes;
+        try {
+            apiRes = await fetch(apiUrl, {
+                headers: { 'User-Agent': 'xNovel-Downloader/1.0' }
+            });
+        } catch (err) {
+            throw new Error(`API通信エラー: ${err.message}`);
+        }
 
         if (!apiRes.ok) {
-            throw new Error('APIからのデータ取得に失敗しました。');
+            throw new Error(`APIからのデータ取得に失敗しました。(HTTP ${apiRes.status})`);
         }
 
         const apiData = await apiRes.json();
+        
         if (!apiData || apiData.length < 2) {
-            throw new Error('該当するNコードの作品が見つかりません。');
+            throw new UserError('該当するNコードの作品が見つかりません。');
         }
 
         const meta = apiData[1];
+
+        // Nコード不一致のチェック
+        if (!meta.ncode || meta.ncode.toLowerCase() !== formattedNcode) {
+            throw new UserError('該当するNコードの作品が見つかりません。');
+        }
+
         const generalAllNo = meta.general_all_no;
         const novelTitle = meta.title;
         // noveltype: 1 = 連載, 2 = 短編
         const novelType = meta.novel_type;
 
         // なろうAPIの仕様 (end: 0 は完結済、1 は連載中、2 は短編)
-        const novelStatus = (novelType === 1) ? (meta.end === 1) ? '連載中' : '完結済' : '短編';
+        const novelStatus = (novelType === 1) ? (meta.end === 1 ? '連載中' : '完結済') : '短編';
 
         if (isFetchCancelled) {
-            throw new Error('検索が中止されました。');
+            throw new UserError('検索が中止されました。');
         }
 
-        // 概要情報を取得できた段階で連載状況(status)を含めて通知
+        // 概要情報を取得できた段階で通知
         event.sender.send('fetch-meta', {
             ncode: formattedNcode,
             title: novelTitle,
@@ -112,10 +134,9 @@ function registerIpcMainFetchNovel() {
             await sleep(1200);
 
             if (isFetchCancelled) {
-                throw new Error('検索が中止されました。');
+                throw new UserError('検索が中止されました。');
             }
 
-            // 短編・単話作品は /1/ ではなく Nコード直下のURL
             const episodeUrl = `https://ncode.syosetu.com/${formattedNcode}/`;
             const epRes = await fetch(episodeUrl, {
                 headers: { 'User-Agent': 'xNovel-Downloader/1.0' }
@@ -123,9 +144,8 @@ function registerIpcMainFetchNovel() {
 
             if (epRes.ok) {
                 const html = await epRes.text();
-                const $ = cheerio.load(html);
+                $ = cheerio.load(html);
 
-                // 短編・全1話用のタイトル・本文抽出セレクタ対応
                 const epTitle = $('.p-novel__title').text().trim() || novelTitle;
                 const epBody = $('.js-novel-text').text().trim() || $('#novel_honbun').text().trim();
 
@@ -150,7 +170,7 @@ function registerIpcMainFetchNovel() {
                 await sleep(1200);
 
                 if (isFetchCancelled) {
-                    throw new Error('検索が中止されました。');
+                    throw new UserError('検索が中止されました。');
                 }
 
                 const episodeUrl = `https://ncode.syosetu.com/${formattedNcode}/${i}/`;
