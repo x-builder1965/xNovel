@@ -1,12 +1,12 @@
 // -- preload.js -------------------------------------------------------
 // copyright = 'Copyright © 2026- @x-builder, Japan';
 // email     = 'x-builder@gmail.com';
-// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.00.0';
+// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.09.0';
 // ---------------------------------------------------------------------
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('api', {
-    fetchNovel: (ncode) => ipcRenderer.invoke('fetch-novel', ncode),
+    fetchNovel: (ncode, isNocturne) => ipcRenderer.invoke('fetch-novel', { ncode, isNocturne }),
     cancelFetchNovel: () => ipcRenderer.send('cancel-fetch-novel'), // ★追加
     saveFiles: (data) => ipcRenderer.invoke('save-files', data),
     onMeta: (callback) => {

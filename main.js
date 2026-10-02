@@ -1,7 +1,7 @@
 // -- main.js ----------------------------------------------------------
 // copyright = 'Copyright © 2026- @x-builder, Japan';
 // email     = 'x-builder@gmail.com';
-// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.08.0';
+// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.09.0';
 // ---------------------------------------------------------------------
 // 🔲モジュールインポート定義🔲
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
@@ -62,17 +62,42 @@ function registerIpcMainOnCancelFetchNovel() {
 
 // 作品データ取得イベント（API + 本文スクレイピング）
 function registerIpcMainFetchNovel() {
-    ipcMain.handle('fetch-novel', async (event, ncode) => {
+    ipcMain.handle('fetch-novel', async (event, payload) => {
         isFetchCancelled = false;
-        const formattedNcode = ncode.toLowerCase().trim();
 
-        const apiUrl = `https://api.syosetu.com/novelapi/api/?out=json&ncode=${formattedNcode}`;
-        
+        let ncode = '';
+        let isNocturne = false;
+
+        if (typeof payload === 'object' && payload !== null) {
+            ncode = payload.ncode || '';
+            isNocturne = !!payload.isNocturne;
+        } else if (typeof payload === 'string') {
+            ncode = payload;
+        }
+
+        const formattedNcode = ncode.toLowerCase().trim();
+        if (!formattedNcode) {
+            throw new UserError('Nコードが正しく指定されていません。');
+        }
+
+        // ノクターン(18禁)有効時のURL切り替え
+        // ★ APIエンドポイントと閲覧用ドメインを両方切り替える
+        const apiUrl = isNocturne
+            ? `https://api.syosetu.com/novel18api/api/?out=json&ncode=${formattedNcode}`
+            : `https://api.syosetu.com/novelapi/api/?out=json&ncode=${formattedNcode}`;
+
+        const baseUrl = isNocturne
+            ? 'https://novel18.syosetu.com'
+            : 'https://ncode.syosetu.com';
+
+        const requestHeaders = {
+            'User-Agent': 'xNovel-Downloader/1.0',
+            'Cookie': 'over18=yes'
+        };
+
         let apiRes;
         try {
-            apiRes = await fetch(apiUrl, {
-                headers: { 'User-Agent': 'xNovel-Downloader/1.0' }
-            });
+            apiRes = await fetch(apiUrl, { headers: requestHeaders });
         } catch (err) {
             throw new Error(`API通信エラー: ${err.message}`);
         }
@@ -137,10 +162,8 @@ function registerIpcMainFetchNovel() {
                 throw new UserError('検索が中止されました。');
             }
 
-            const episodeUrl = `https://ncode.syosetu.com/${formattedNcode}/`;
-            const epRes = await fetch(episodeUrl, {
-                headers: { 'User-Agent': 'xNovel-Downloader/1.0' }
-            });
+            const episodeUrl = `${baseUrl}/${formattedNcode}/`;
+            const epRes = await fetch(episodeUrl, { headers: requestHeaders });
 
             if (epRes.ok) {
                 const html = await epRes.text();
@@ -173,10 +196,8 @@ function registerIpcMainFetchNovel() {
                     throw new UserError('検索が中止されました。');
                 }
 
-                const episodeUrl = `https://ncode.syosetu.com/${formattedNcode}/${i}/`;
-                const epRes = await fetch(episodeUrl, {
-                    headers: { 'User-Agent': 'xNovel-Downloader/1.0' }
-                });
+                const episodeUrl = `${baseUrl}/${formattedNcode}/${i}/`;
+                const epRes = await fetch(episodeUrl, { headers: requestHeaders });
 
                 if (!epRes.ok) {
                     continue;

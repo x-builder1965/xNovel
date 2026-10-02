@@ -1,7 +1,7 @@
 /* -- style.css --------------------------------------------------------
  * copyright = 'Copyright © 2026- @x-builder, Japan';
  * email     = 'x-builder@gmail.com';
- * appName   = 'xNovel -小説家になろうダウンローダー- Ver1.08.0';
+ * appName   = 'xNovel -小説家になろうダウンローダー- Ver1.09.0';
  * --------------------------------------------------------------------- */
 :root {
     /* デフォルト：ダークテーマ */
@@ -767,4 +767,23 @@ caption {
 .changelog-list li:hover {
     background-color: var(--table-hover-bg);
     transition: background-color 0.3s ease;
+}
+
+.nocturne-btn {
+    background-color: var(--bg-button, #444);
+    color: #fff;
+    border: 1px solid var(--border-color, #666);
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+.nocturne-btn:hover {
+    opacity: 0.9;
+}
+/* ノクターン有効時：背景色を赤に変更 */
+.nocturne-btn.active {
+    background-color: #d9534f;
+    border-color: #d43f3a;
 }

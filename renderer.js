@@ -1,7 +1,7 @@
 // -- renderer.js ------------------------------------------------------
 // copyright = 'Copyright © 2026- @x-builder, Japan';
 // email     = 'x-builder@gmail.com';
-// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.08.0';
+// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.09.0';
 // ---------------------------------------------------------------------
 // 🔲イミディエイト定義🔲
 const RESIZE_HANDLE_WIDTH = 8; // 右端判定エリアの幅 (px)
@@ -52,12 +52,14 @@ let changelogTitle = null;
 let sidebar = null;
 let progressContainer = null;
 let progressBar = null;
+let nocturneBtn = null;
 
 // 🔲グローバル変数定義🔲
 let currentNovelData = null;
 let isSearching = false;
 let isResizing = false;
 let isHoveringRightEdge = false;
+let isNocturne = false;
 
 document.addEventListener('DOMContentLoaded', async () => {
     // 🔲初期設定🔲
@@ -91,6 +93,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 🔲個別イベントリスナー登録🔲
     // ☀️／🌙ダークモード切替（トグルボタン）
     registerThemeToggleClick();
+    // 🔞ノクターンモード切り替えボタンのクリック
+    registerNocturneBtnClick();
     // Nコード入力欄でEnterキーが押された時に検索を実行
     registerNcodeInputKeydown();
     // サイドバーの右端ドラッグによる幅サイズ変更機能
@@ -122,8 +126,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function setupAllDomSettings() {
     mainContainer = document.querySelector('.main-container');
     themeToggle = document.getElementById('themeToggle');
+    nocturneBtn = document.getElementById('nocturneBtn');
     ncodeInput = document.getElementById('ncodeInput');
-    statusDisplay = document.getElementById('statusDisplay'); // 追加
+    statusDisplay = document.getElementById('statusDisplay');
     titleDisplay = document.getElementById('titleDisplay');
     searchBtn = document.getElementById('searchBtn');
     saveBtn = document.getElementById('saveBtn');
@@ -396,6 +401,18 @@ function registerThemeToggleClick() {
     });
 }
 
+// 🔞ノクターンモード切り替えボタンのクリックリスナー
+function registerNocturneBtnClick() {
+    nocturneBtn?.addEventListener('click', () => {
+        isNocturne = !isNocturne;
+        if (isNocturne) {
+            nocturneBtn.classList.add('active');
+        } else {
+            nocturneBtn.classList.remove('active');
+        }
+    });
+}
+
 // 全選択ボタンクリック
 function registerSelectAllBtnClick() {
     selectAllBtn.addEventListener('click', () => {
@@ -453,7 +470,7 @@ function registerSearchBtnClick() {
         showProgressBar('searching');
     
         try {
-            currentNovelData = await window.api.fetchNovel(ncode);
+            currentNovelData = await window.api.fetchNovel(ncode, isNocturne);
             
             statusMessage.textContent = `「${currentNovelData.title}」の全データ取得完了 (${currentNovelData.items.length - 1}話 + 概要)`;
     
