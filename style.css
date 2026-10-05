@@ -1,7 +1,7 @@
 /* -- style.css --------------------------------------------------------
  * copyright = 'Copyright © 2026- @x-builder, Japan';
  * email     = 'x-builder@gmail.com';
- * appName   = 'xNovel -小説家になろうダウンローダー- Ver1.10.0';
+ * appName   = 'xNovel -小説家になろうダウンローダー- Ver1.11.0';
  * --------------------------------------------------------------------- */
 :root {
     /* デフォルト：ダークテーマ */
@@ -67,6 +67,7 @@
     --table-hover-bg: #404040;
     --table-shadow: rgba(0, 0, 0, 0.6);
     --subtitle-bg: rgba(0, 204, 194, 0.37);
+    --subtitle-bg-hover: rgba(40, 115, 112, 1.0);
     --sub-item-text: #b0bec5;
 }
 
@@ -130,6 +131,7 @@ body.light-mode {
     --table-hover-bg: #f0f4f8;
     --table-shadow: rgba(0, 0, 0, 0.1);
     --subtitle-bg: rgba(0, 197, 204, 0.15);
+    --subtitle-bg-hover: rgba(204, 237, 241, 1.0);
     --sub-item-text: #546e7a;
 }
 
@@ -718,7 +720,6 @@ table {
     font-size: 0.7em;
 }
 .sub-title {
-    text-decoration: underline;
     background-color: var(--subtitle-bg);
 }
 .body-table td.no-data { 
@@ -757,20 +758,16 @@ caption {
 .changelog-list li {
     margin-top: 0.2em;
     border-bottom: 1px solid var(--border-color);
-    /* padding-bottom: 0.1em; */
     white-space: pre-wrap;
     font-size: 1.2vw;
     line-height: 1.6;
 }
-.changelog-list li.sub-item {
-    padding-left: 15px;
-    color: var(--sub-item-text);
-    border-bottom: none;
-    padding-bottom: 2px;
-    margin-bottom: 0;
-}
 .changelog-list li:hover {
     background-color: var(--table-hover-bg);
+    transition: background-color 0.3s ease;
+}
+.changelog-list li.sub-title:hover {
+    background-color: var(--subtitle-bg-hover);
     transition: background-color 0.3s ease;
 }
 
