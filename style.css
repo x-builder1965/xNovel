@@ -1,7 +1,7 @@
 /* -- style.css --------------------------------------------------------
  * copyright = 'Copyright © 2026- @x-builder, Japan';
  * email     = 'x-builder@gmail.com';
- * appName   = 'xNovel -小説家になろうダウンローダー- Ver1.09.0';
+ * appName   = 'xNovel -小説家になろうダウンローダー- Ver1.10.0';
  * --------------------------------------------------------------------- */
 :root {
     /* デフォルト：ダークテーマ */
@@ -739,12 +739,15 @@ caption {
 }
 
 /* 変更履歴のコンテナ */
+.changelog-header {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+}
 .changelog-Content {
     overflow-y: auto;
     font-size: 1.5rem;
     color: var(--text-color);
 }
-
 /* 履歴リストのスタイル */
 .changelog-list {
     list-style-type: none;
@@ -752,10 +755,12 @@ caption {
     margin: 0;
 }
 .changelog-list li {
-    margin-bottom: 8px;
+    margin-top: 0.2em;
     border-bottom: 1px solid var(--border-color);
-    padding-bottom: 6px;
+    /* padding-bottom: 0.1em; */
     white-space: pre-wrap;
+    font-size: 1.2vw;
+    line-height: 1.6;
 }
 .changelog-list li.sub-item {
     padding-left: 15px;
