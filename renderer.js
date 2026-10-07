@@ -578,7 +578,7 @@ function registerSaveBtnClick() {
             });
     
             if (result.success) {
-                showToast(`${result.count}個のテキストファイルをZIP保存しました。\n保存先: ${result.dir}\n元フォルダはゴミ箱に移動しました。`);
+                showToast(`${result.count}ファイルを保存しました。\n保存先: ${result.dir}`);
             }
         } catch (error) {
             showToast(`保存エラー: ${error.message}`, 'error');
