@@ -1,6 +1,6 @@
 {
     "name": "xnovel",
-    "version": "1.11.0",
+    "version": "1.12.0",
     "description": "xNovel novel-downloader",
     "main": "main.js",
     "author": "x-builder",
@@ -16,6 +16,7 @@
         "sign": "electron-builder --win --x64 --config.cscLink=authenticode.pfx --config.cscKeyPassword=%CSC_KEY_PASSWORD%"
     },
     "dependencies": {
+        "archiver": "^7.0.1",
         "cheerio": "^1.2.0"
     },
     "devDependencies": {

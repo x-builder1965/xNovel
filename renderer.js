@@ -1,7 +1,7 @@
 // -- renderer.js ------------------------------------------------------
 // copyright = 'Copyright © 2026- @x-builder, Japan';
 // email     = 'x-builder@gmail.com';
-// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.09.0';
+// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.12.0';
 // ---------------------------------------------------------------------
 // 🔲イミディエイト定義🔲
 const RESIZE_HANDLE_WIDTH = 8; // 右端判定エリアの幅 (px)
@@ -247,7 +247,11 @@ function registerWindowApiOnProgress() {
 
 // 保存進捗通知受け取り
 function registerWindowApiOnSaveProgress() {
-    window.api.onSaveProgress(({ current, total }) => {
+    window.api.onSaveProgress(({ current, total, phase }) => {
+        if (phase === 'archive') {
+            statusMessage.textContent = 'ZIPファイルを作成中...';
+            return;
+        }
         statusMessage.textContent = `ファイルを保存中... (${current} / ${total} 件)`;
         progressBar.value = current;
     });
@@ -574,7 +578,7 @@ function registerSaveBtnClick() {
             });
     
             if (result.success) {
-                showToast(`${result.count}個のテキストファイルを保存しました。\n保存先: ${result.dir}`);
+                showToast(`${result.count}個のテキストファイルをZIP保存しました。\n保存先: ${result.dir}\n元フォルダはゴミ箱に移動しました。`);
             }
         } catch (error) {
             showToast(`保存エラー: ${error.message}`, 'error');

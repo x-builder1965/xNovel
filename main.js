@@ -1,13 +1,15 @@
 // -- main.js ----------------------------------------------------------
 // copyright = 'Copyright © 2026- @x-builder, Japan';
 // email     = 'x-builder@gmail.com';
-// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.09.0';
+// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.12.0';
 // ---------------------------------------------------------------------
 // 🔲モジュールインポート定義🔲
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
 const cheerio = require('cheerio');
+const archiver = require('archiver');
 // 🔲イミディエイト定義🔲
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 // 🔲グローバル変数🔲
@@ -286,8 +288,58 @@ function registerIpcMainSaveNovel() {
             });
         }
 
-        return { success: true, count: total, dir: targetDir };
+        event.sender.send('save-progress', { phase: 'archive' });
+
+        const archivePath = path.join(selectedBaseDir, `${dirName}.zip`);
+        await createZipArchive(targetDir, archivePath);
+        await shell.trashItem(targetDir);
+
+        return { success: true, count: total, dir: archivePath };
     });
+}
+
+async function createZipArchive(sourceDir, archivePath) {
+    const temporaryArchivePath = path.join(
+        path.dirname(archivePath),
+        `.${path.basename(archivePath)}.${process.pid}.${crypto.randomUUID()}.tmp`
+    );
+    const output = fs.createWriteStream(temporaryArchivePath);
+    const archive = archiver('zip', { zlib: { level: 9 } });
+
+    try {
+        await new Promise((resolve, reject) => {
+            let failed = false;
+            const fail = (error) => {
+                if (failed) return;
+                failed = true;
+                archive.abort();
+                if (output.closed) {
+                    reject(error);
+                } else {
+                    output.once('close', () => reject(error));
+                    output.destroy();
+                }
+            };
+
+            output.on('close', () => {
+                if (!failed) resolve();
+            });
+            output.on('error', fail);
+            archive.on('error', fail);
+            try {
+                archive.pipe(output);
+                archive.directory(sourceDir, path.basename(sourceDir));
+                Promise.resolve(archive.finalize()).catch(fail);
+            } catch (error) {
+                fail(error);
+            }
+        });
+
+        await fs.promises.rename(temporaryArchivePath, archivePath);
+    } catch (error) {
+        await fs.promises.rm(temporaryArchivePath, { force: true });
+        throw error;
+    }
 }
 
 // 🔲共通ヘルパー関数🔲
