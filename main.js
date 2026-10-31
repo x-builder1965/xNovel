@@ -1,10 +1,11 @@
 // -- main.js ----------------------------------------------------------
 // copyright = 'Copyright © 2026- @x-builder, Japan';
 // email     = 'x-builder@gmail.com';
-// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.12.0';
+// appName   = 'xNovel -小説家になろうダウンローダー- Ver1.13.0';
 // ---------------------------------------------------------------------
 // 🔲モジュールインポート定義🔲
 const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
+const gotTheLock = app.requestSingleInstanceLock();
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
@@ -18,8 +19,8 @@ let mainWindow;
 let isFetchCancelled = false;
 
 // 🔲windowイベントリスナー登録🔲
-// アプリ初期処理（window作成）
-registerAppWhenReady();
+// 多重起動防止
+setupMultipleActivationPrevention();
 // window終了イベント
 registerAppOnWindowAllClosed();
 // 🔲個別イベントリスナー登録🔲
@@ -40,9 +41,28 @@ class UserError extends Error {
 }
 
 // 🔲windowイベントリスナー登録🔲
-// アプリ初期処理
-function registerAppWhenReady() {
-    app.whenReady().then(createWindow);
+// 多重起動防止
+function setupMultipleActivationPrevention() {
+    if (!gotTheLock) {
+        // 2つ目以降の起動（重複起動）の場合：即座にアプリを終了する
+        app.quit();
+    } else {
+        // 初回起動（プライマリインスタンス）の場合
+        app.on('second-instance', (event, commandLine, workingDirectory) => {
+            if (mainWindow) {
+                if (mainWindow.isMinimized()) mainWindow.restore();
+                mainWindow.focus();
+            }
+        });
+    
+        app.whenReady().then(() => {
+            createWindow();
+    
+            app.on('activate', () => {
+                if (BrowserWindow.getAllWindows().length === 0) createWindow();
+            });
+        });
+    }
 }
 
 // window終了イベント
